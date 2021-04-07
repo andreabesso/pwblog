@@ -7,6 +7,7 @@ package it.tss.blog.blog.boundary;
 
 import it.tss.blog.blog.control.UserStore;
 import it.tss.blog.blog.entity.User;
+import java.time.LocalDateTime;
 import java.util.List;
 import javax.inject.Inject;
 import javax.ws.rs.Consumes;
@@ -59,12 +60,13 @@ public class UsersResource {
         String lname = json.getString("lname");
         String email = json.getString("email");
         String pwd = json.getString("pwd");
+        String role = json.getString("role");
         User user = new User(fname, lname, email, pwd, User.Role.USER);
         User usr = store.create(user);
         return usr.toJson();
     }
 
-   @PATCH
+    @PATCH
     @Path("{id}")
     @Produces(MediaType.APPLICATION_JSON)
     public JsonObject update(@PathParam("id") Long id, JsonObject json) {
@@ -72,11 +74,14 @@ public class UsersResource {
         String lname = json.getString("lname");
         String pwd = json.getString("pwd");
         User user = store.find(id).orElseThrow(() -> new NotFoundException());
-        User usr = new User(fname, lname, user.getEmail(), pwd, user.getRole());
-        User usrupdate = store.update(usr, json);
+        user.setFname(fname);
+        user.setLname(lname);
+        user.setPwd(pwd);
+        User usrupdate = store.update(user, json);
         return usrupdate.toJson();
 
     }
+
     @PATCH
     @Path("{id}/ban")
     @Produces(MediaType.APPLICATION_JSON)
@@ -85,4 +90,5 @@ public class UsersResource {
         User userblock = store.ban(user, json);
         return userblock.toJson();
     }
+
 }
