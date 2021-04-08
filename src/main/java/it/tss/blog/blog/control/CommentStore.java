@@ -26,13 +26,19 @@ public class CommentStore {
     EntityManager em;
 
     public List<Comment> searchByArticle(Long articleId) {
-        return em.createQuery("select e from Comment e where e.article.id= :articleId  order by e.createdOn ", Comment.class)
+        return em.createQuery("select e from Comment e where e.article.id :articleId  order by e.createdOn ", Comment.class)
                 .setParameter("articleId", articleId)
                 .getResultStream()
                 .collect(Collectors.toList());
     }
     
-
+ public List<Comment> searchByComment(Long commentId) {
+        return em.createQuery("select e from Comment e where e.answersTo.id= :commentId  order by e.createdOn ", Comment.class)
+                .setParameter("commentId", commentId)
+                .getResultStream()
+                .collect(Collectors.toList());
+    }
+    
    public Comment create(Comment c) {
         return em.merge(c);
     }

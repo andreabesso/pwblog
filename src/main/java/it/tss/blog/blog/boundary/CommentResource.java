@@ -11,6 +11,8 @@ import it.tss.blog.blog.control.UserStore;
 import it.tss.blog.blog.entity.Article;
 import it.tss.blog.blog.entity.Comment;
 import it.tss.blog.blog.entity.User;
+import java.util.List;
+import java.util.stream.Collectors;
 import javax.annotation.security.DenyAll;
 import javax.annotation.security.PermitAll;
 import javax.annotation.security.RolesAllowed;
@@ -57,6 +59,19 @@ public class CommentResource {
         return comment.toJson();
     }
 
+  
+    @GET//ritorna tutti i commenti di un commento
+    @Path("/answers")
+    @PermitAll
+    @Produces(MediaType.APPLICATION_JSON)
+    public List<JsonObject> search() {
+         return commentStore.searchByComment(commentId)
+                .stream()
+                .map(v -> v.toJson())
+                .collect(Collectors.toList());
+    }
+   
+    
     @DELETE
     @RolesAllowed({"ADMIN"})
     public Response delete(@PathParam("commentId") Long id) {
@@ -66,7 +81,7 @@ public class CommentResource {
     }
 
    
-    @POST
+    @POST//crea commento ad un altro commento
     @Path("/answer")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
