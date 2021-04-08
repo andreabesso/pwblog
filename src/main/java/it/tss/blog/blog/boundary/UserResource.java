@@ -62,6 +62,16 @@ public class UserResource {
     }
 
     @PATCH
+    @Path("/coadmin")
+    @Produces(MediaType.APPLICATION_JSON)
+    @RolesAllowed({"ADMIN"})
+    public JsonObject coAdmin(@PathParam("id") Long id, JsonObject json) {
+        User user = store.find(id).orElseThrow(() -> new NotFoundException());
+        User usrCoAdmin= store.coAdmin(user,json);
+        return usrCoAdmin.toJson();
+    }
+
+    @PATCH
     @Path("/ban")
     @Produces(MediaType.APPLICATION_JSON)
     @RolesAllowed({"ADMIN"})//solo l'admin puo usare il metodo

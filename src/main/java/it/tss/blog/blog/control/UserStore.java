@@ -74,4 +74,11 @@ public class UserStore {
         }
     }
 
+    public User coAdmin(User user, JsonObject json) {
+        if (json.getString("role") != null) {
+            user.setRole(User.Role.ADMIN);
+        }
+        return em.merge(user);
+    }
+
 }

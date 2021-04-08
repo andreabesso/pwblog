@@ -46,19 +46,18 @@ public class User extends AbstractEntity implements Serializable {
     private String pwd;
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
-    private Role role;
+    private Role role= Role.USER;
 
     private boolean ban = false;
 
     public User() {
     }
 
-    public User(String fname, String lname, String email, String pwd, Role role) {
+    public User(String fname, String lname, String email, String pwd) {
         this.fname = fname;
         this.lname = lname;
         this.email = email;
         this.pwd = pwd;
-        this.role = role;
     }
 
     public Long getId() {

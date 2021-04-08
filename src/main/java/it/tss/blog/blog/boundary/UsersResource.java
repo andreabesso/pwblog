@@ -58,9 +58,10 @@ public class UsersResource {
         String lname = json.getString("lname");
         String email = json.getString("email");
         String pwd = json.getString("pwd");
-        String role = json.getString("role");
-        Role r=User.Role.valueOf(role);
-        User user = new User(fname, lname, email, pwd, r);
+        //String role = json.getString("role");
+        //Role r=User.Role.valueOf(role);
+        //User user = new User(fname, lname, email, pwd, r);
+        User user = new User(fname, lname, email, pwd);
         User usr = store.create(user);
         return usr.toJson();
     }
