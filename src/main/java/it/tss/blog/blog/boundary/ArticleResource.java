@@ -12,6 +12,7 @@ import javax.annotation.security.PermitAll;
 import javax.annotation.security.RolesAllowed;
 import javax.inject.Inject;
 import javax.json.JsonObject;
+import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.NotFoundException;
 import javax.ws.rs.PATCH;
@@ -21,6 +22,7 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.container.ResourceContext;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
 
 /**
  *
@@ -48,6 +50,15 @@ public class ArticleResource {
         Article art=new Article(title, content, tag);
         Article artupdate = store.update(art, json);
         return artupdate.toJson();
+    }
+    
+    
+    @DELETE
+    @RolesAllowed("ADMIN")
+    public Response delete(@PathParam("articleId") Long id) {
+         Article article = store.find(articleId).orElseThrow(() -> new NotFoundException());
+        store.delete(articleId);
+        return Response.status(Response.Status.NO_CONTENT).build();
     }
 
     @GET

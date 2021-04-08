@@ -52,6 +52,10 @@ public class ArticleStore {
     }
     return em.merge(article);
     }
+
+    public void delete(Long articleId) {
+        em.remove(em.find(Article.class, articleId));
+    }
     
     
 }
