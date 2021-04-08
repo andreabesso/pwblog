@@ -28,6 +28,8 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.container.ResourceContext;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
+import org.eclipse.microprofile.jwt.Claim;
+import org.eclipse.microprofile.jwt.Claims;
 
 /**
  *
@@ -47,6 +49,10 @@ public class CommentsResource {
     private ResourceContext resource;
 
     private Long articleId;
+    
+    @Inject
+    @Claim(standard = Claims.sub)
+    String userId;
 
     @GET
     @Produces(MediaType.APPLICATION_JSON)
@@ -64,7 +70,6 @@ public class CommentsResource {
     @RolesAllowed({"ADMIN", "USER"})
     public JsonObject create(JsonObject json) {
         String testo = json.getString("testo");
-        String userId = json.getString("user");
         String rating = json.getString("rating");
         Article article = articleStore.find(articleId).orElseThrow(() -> new NotFoundException());
         User user = userStore.find(Long.parseLong(userId)).orElseThrow(() -> new NotFoundException());
