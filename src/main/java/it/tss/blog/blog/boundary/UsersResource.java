@@ -7,6 +7,7 @@ package it.tss.blog.blog.boundary;
 
 import it.tss.blog.blog.control.UserStore;
 import it.tss.blog.blog.entity.User;
+import it.tss.blog.blog.entity.User.Role;
 import java.util.List;
 import javax.inject.Inject;
 import javax.ws.rs.Consumes;
@@ -58,7 +59,8 @@ public class UsersResource {
         String email = json.getString("email");
         String pwd = json.getString("pwd");
         String role = json.getString("role");
-        User user = new User(fname, lname, email, pwd, User.Role.USER);
+        Role r=User.Role.valueOf(role);
+        User user = new User(fname, lname, email, pwd, r);
         User usr = store.create(user);
         return usr.toJson();
     }

@@ -31,6 +31,8 @@ public class User extends AbstractEntity implements Serializable {
     @GeneratedValue(generator = "user_sequence")
     protected Long id;
 
+  
+
     public enum Role {
         ADMIN, USER
     }
