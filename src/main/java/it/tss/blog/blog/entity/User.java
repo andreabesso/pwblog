@@ -146,8 +146,6 @@ public class User extends AbstractEntity implements Serializable {
                 .add("fname", this.fname)
                 .add("lname", this.lname)
                 .add("email", this.email)
-                .add("role", this.role.toString())
-                .add("ban", this.isBan())
                 .build();
     }
 

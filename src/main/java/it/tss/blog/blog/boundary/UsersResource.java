@@ -60,7 +60,7 @@ public class UsersResource {
         String pwd = json.getString("pwd");
         //String role = json.getString("role");
         //Role r=User.Role.valueOf(role);
-        //User user = new User(fname, lname, email, pwd, r);
+        //User user = new User(fname, lname, email, pwd, r);// qui assegnavo come valore di defaulr Role.role.USER
         User user = new User(fname, lname, email, pwd);
         User usr = store.create(user);
         return usr.toJson();
