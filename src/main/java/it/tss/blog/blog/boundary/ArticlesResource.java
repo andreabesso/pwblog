@@ -6,33 +6,30 @@
 package it.tss.blog.blog.boundary;
 
 import it.tss.blog.blog.control.ArticleStore;
-import it.tss.blog.blog.control.CommentStore;
 import it.tss.blog.blog.entity.Article;
-import it.tss.blog.blog.entity.Comment;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
+import javax.annotation.security.DenyAll;
+import javax.annotation.security.PermitAll;
+import javax.annotation.security.RolesAllowed;
 import javax.inject.Inject;
 import javax.json.JsonObject;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
-import javax.ws.rs.NotFoundException;
-import javax.ws.rs.PATCH;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
-import static javax.ws.rs.client.Entity.json;
 import javax.ws.rs.container.ResourceContext;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
 
 /**
  *
  * @author andre
  */
 @Path("/articles")
+@DenyAll
 public class ArticlesResource {
     
     @Inject
@@ -43,6 +40,7 @@ public class ArticlesResource {
     
     @GET
     @Produces(MediaType.APPLICATION_JSON)
+    @PermitAll
     public List<JsonObject> search(){
         return store.search()
                 .stream()
@@ -61,6 +59,7 @@ public class ArticlesResource {
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
+    @RolesAllowed({"ADMIN"})
     public JsonObject create(JsonObject json){
         String title=json.getString("title");
         String content=json.getString("content");

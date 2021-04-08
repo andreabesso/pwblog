@@ -13,10 +13,12 @@ import it.tss.blog.blog.entity.Comment;
 import it.tss.blog.blog.entity.User;
 import java.util.List;
 import java.util.stream.Collectors;
+import javax.annotation.security.DenyAll;
+import javax.annotation.security.PermitAll;
+import javax.annotation.security.RolesAllowed;
 import javax.inject.Inject;
 import javax.json.JsonObject;
 import javax.ws.rs.Consumes;
-import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.NotFoundException;
 import javax.ws.rs.POST;
@@ -26,12 +28,13 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.container.ResourceContext;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
 
 /**
  *
  * @author andre
  */
+@Path("/comments")
+@DenyAll
 public class CommentsResource {
 
     @Inject
@@ -47,6 +50,7 @@ public class CommentsResource {
 
     @GET
     @Produces(MediaType.APPLICATION_JSON)
+    @PermitAll
     public List<JsonObject> search() {
         return commentStore.searchByArticle(articleId)
                 .stream()
@@ -57,6 +61,7 @@ public class CommentsResource {
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
+    @RolesAllowed({"ADMIN", "USER"})
     public JsonObject create(JsonObject json) {
         String testo = json.getString("testo");
         String userId = json.getString("user");
@@ -68,7 +73,6 @@ public class CommentsResource {
         return comm.toJson();
     }
 
-
     @Path("{commentId}")
     public CommentResource find(@PathParam("commentId") Long id) {
         CommentResource sub = resource.getResource(CommentResource.class);
@@ -76,7 +80,6 @@ public class CommentsResource {
         return sub;
     }
 
-   
     public Long getArticleId() {
         return articleId;
     }

@@ -6,13 +6,14 @@
 package it.tss.blog.blog.entity;
 
 import java.io.Serializable;
-import java.math.BigDecimal;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
+import java.util.Objects;
 import javax.json.Json;
 import javax.json.JsonObject;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
 /**
@@ -23,15 +24,20 @@ import javax.persistence.Table;
 @Table(name = "article")
 public class Article extends AbstractEntity implements Serializable {
 
+    @Id
+    @SequenceGenerator(name = "article_sequence", sequenceName = "article_sequence", initialValue = 1, allocationSize = 1)
+    @GeneratedValue(generator = "article_sequence")
+    protected Long id;
+
     @Column(nullable = false)
     private String title;
 
     @Column(nullable = false, length = 2048)
     private String content;
 
-    @Column(nullable =false)
+    @Column(nullable = false)
     private String tag;
-    
+
 
     public Article() {
     }
@@ -42,7 +48,14 @@ public class Article extends AbstractEntity implements Serializable {
         this.tag = tag;
     }
 
-    
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
     public String getTitle() {
         return title;
     }
@@ -67,13 +80,38 @@ public class Article extends AbstractEntity implements Serializable {
         this.tag = tags;
     }
 
-    public JsonObject toJson(){
+    @Override
+    public int hashCode() {
+        int hash = 3;
+        hash = 89 * hash + Objects.hashCode(this.id);
+        return hash;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final Article other = (Article) obj;
+        if (!Objects.equals(this.id, other.id)) {
+            return false;
+        }
+        return true;
+    }
+
+    public JsonObject toJson() {
         return Json.createObjectBuilder()
                 .add("title", this.title)
                 .add("content", this.content)
                 .add("tags", this.tag)
                 .build();
-              
+
     }
-    
+
 }

@@ -6,13 +6,16 @@
 package it.tss.blog.blog.entity;
 
 import java.io.Serializable;
-import java.time.format.DateTimeFormatter;
+import java.util.Objects;
 import javax.json.Json;
 import javax.json.JsonObject;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
 /**
@@ -22,6 +25,11 @@ import javax.persistence.Table;
 @Entity
 @Table(name = "user")
 public class User extends AbstractEntity implements Serializable {
+
+    @Id
+    @SequenceGenerator(name = "user_sequence", sequenceName = "user_sequence", initialValue = 1, allocationSize = 1)
+    @GeneratedValue(generator = "user_sequence")
+    protected Long id;
 
     public enum Role {
         ADMIN, USER
@@ -34,10 +42,10 @@ public class User extends AbstractEntity implements Serializable {
     private String email;
     @Column(nullable = false)
     private String pwd;
+    @Column(nullable = false)
     @Enumerated(EnumType.STRING)
-    private Role role = Role.USER;
+    private Role role;
 
-    
     private boolean ban = false;
 
     public User() {
@@ -49,6 +57,14 @@ public class User extends AbstractEntity implements Serializable {
         this.email = email;
         this.pwd = pwd;
         this.role = role;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public String getFname() {
@@ -97,6 +113,31 @@ public class User extends AbstractEntity implements Serializable {
 
     public void setBan(boolean ban) {
         this.ban = ban;
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = 7;
+        hash = 97 * hash + Objects.hashCode(this.id);
+        return hash;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final User other = (User) obj;
+        if (!Objects.equals(this.id, other.id)) {
+            return false;
+        }
+        return true;
     }
 
     public JsonObject toJson() {

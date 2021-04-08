@@ -7,36 +7,40 @@ package it.tss.blog.blog.boundary;
 
 import it.tss.blog.blog.control.UserStore;
 import it.tss.blog.blog.entity.User;
-import java.time.LocalDateTime;
 import java.util.List;
 import javax.inject.Inject;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
-import javax.ws.rs.NotFoundException;
-import javax.ws.rs.PATCH;
 import javax.ws.rs.POST;
-import java.util.Optional;
 import java.util.stream.Collectors;
+import javax.annotation.security.DenyAll;
+import javax.annotation.security.PermitAll;
+import javax.annotation.security.RolesAllowed;
 import javax.json.JsonObject;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
-import static javax.ws.rs.client.Entity.json;
+import javax.ws.rs.container.ResourceContext;
+import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
 
 /**
  *
  * @author andre
  */
 @Path("/users")
+@DenyAll
 public class UsersResource {
 
     @Inject
     UserStore store;
 
+    @Context
+    ResourceContext resource;
+
     @GET
     @Produces(MediaType.APPLICATION_JSON)
+    @PermitAll
     public List<JsonObject> search() {
         return store.search()
                 .stream()
@@ -44,17 +48,10 @@ public class UsersResource {
                 .collect(Collectors.toList());
     }
 
-    @GET
-    @Path("{id}")
-    @Produces(MediaType.APPLICATION_JSON)
-    public JsonObject find(@PathParam("id") Long id) {
-        User user = store.find(id).orElseThrow(() -> new NotFoundException());
-        return user.toJson();
-    }
-
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
+    @PermitAll//permesso a tutti perchè chi non è utente deve potersi registrare
     public JsonObject create(JsonObject json) {
         String fname = json.getString("fname");
         String lname = json.getString("lname");
@@ -66,29 +63,12 @@ public class UsersResource {
         return usr.toJson();
     }
 
-    @PATCH
     @Path("{id}")
     @Produces(MediaType.APPLICATION_JSON)
-    public JsonObject update(@PathParam("id") Long id, JsonObject json) {
-        String fname = json.getString("fname");
-        String lname = json.getString("lname");
-        String pwd = json.getString("pwd");
-        User user = store.find(id).orElseThrow(() -> new NotFoundException());
-        user.setFname(fname);
-        user.setLname(lname);
-        user.setPwd(pwd);
-        User usrupdate = store.update(user, json);
-        return usrupdate.toJson();
-
-    }
-
-    @PATCH
-    @Path("{id}/ban")
-    @Produces(MediaType.APPLICATION_JSON)
-    public JsonObject ban(@PathParam("id") Long id, JsonObject json) {
-        User user = store.find(id).orElseThrow(() -> new NotFoundException());
-        User userblock = store.ban(user, json);
-        return userblock.toJson();
+    public UserResource find(@PathParam("id") Long id) {
+        UserResource sub = resource.getResource(UserResource.class);
+        sub.setUserId(id);
+        return sub;
     }
 
 }

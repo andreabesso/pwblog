@@ -7,6 +7,9 @@ package it.tss.blog.blog.boundary;
 
 import it.tss.blog.blog.control.ArticleStore;
 import it.tss.blog.blog.entity.Article;
+import javax.annotation.security.DenyAll;
+import javax.annotation.security.PermitAll;
+import javax.annotation.security.RolesAllowed;
 import javax.inject.Inject;
 import javax.json.JsonObject;
 import javax.ws.rs.GET;
@@ -23,6 +26,7 @@ import javax.ws.rs.core.MediaType;
  *
  * @author andre
  */
+@DenyAll
 public class ArticleResource {
 
     @Inject
@@ -35,6 +39,7 @@ public class ArticleResource {
 
     @PATCH
     @Produces(MediaType.APPLICATION_JSON)
+    @RolesAllowed({"ADMIN"})
     public JsonObject update(JsonObject json) {
         String title = json.getString("title");
         String content = json.getString("content");
@@ -47,6 +52,7 @@ public class ArticleResource {
 
     @GET
     @Produces(MediaType.APPLICATION_JSON)
+    @PermitAll
     public JsonObject find(@PathParam("id") Long id) {
         Article article = store.find(id).orElseThrow(() -> new NotFoundException());
         return article.toJson();

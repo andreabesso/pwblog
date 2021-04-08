@@ -6,11 +6,13 @@
 package it.tss.blog.blog.control;
 
 import it.tss.blog.blog.entity.User;
+import it.tss.blog.security.control.SecurityEncoding;
 import java.util.List;
 import java.util.Optional;
 import javax.enterprise.context.RequestScoped;
 import javax.json.JsonObject;
 import javax.persistence.EntityManager;
+import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
 import javax.transaction.Transactional;
 
@@ -26,7 +28,7 @@ public class UserStore {
     private EntityManager em;
 
     public List<User> search() {
-        return em.createQuery("select e from User e order by e.id", User.class)
+        return em.createQuery("select e from User e where e.ban=false order by e.id", User.class)
                 .getResultList();
     }
 
@@ -58,5 +60,18 @@ public class UserStore {
                 }
         return em.merge(user);
     }
-
-}
+    
+    
+         public Optional<User> findByEmilAndPwd(String email, String pwd) {
+        try {
+            User found = em.createQuery("select e from User e where e.email= :email and e.pwd= :pwd", User.class)
+                    .setParameter("email", email)
+                    .setParameter("pwd", pwd)
+                    .getSingleResult();
+            return Optional.of(found);
+        } catch (NoResultException ex) {
+            return Optional.empty();
+        }
+    }
+     
+ }
