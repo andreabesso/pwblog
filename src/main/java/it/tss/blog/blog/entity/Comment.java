@@ -45,7 +45,10 @@ public class Comment extends AbstractEntity implements Serializable {
     private User user;
     private int rating;
     private Long answersTo;
-
+    
+    @Column(name = "dateCom", insertable = false, columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
+    private LocalDateTime dateCom;
+    
     public Comment() {
     }
 

@@ -6,6 +6,7 @@
 package it.tss.blog.blog.entity;
 
 import java.io.Serializable;
+import java.time.LocalDateTime;
 import java.util.Objects;
 import javax.json.Json;
 import javax.json.JsonObject;
@@ -38,6 +39,8 @@ public class Article extends AbstractEntity implements Serializable {
     @Column(nullable = false)
     private String tag;
 
+    @Column(name = "dateArt", insertable = false, columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
+    private LocalDateTime dateArt;
 
     public Article() {
     }
