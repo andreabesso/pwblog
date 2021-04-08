@@ -8,19 +8,26 @@ package it.tss.blog.blog.boundary;
 import it.tss.blog.blog.control.ArticleStore;
 import it.tss.blog.blog.control.CommentStore;
 import it.tss.blog.blog.control.UserStore;
+import it.tss.blog.blog.entity.Article;
 import it.tss.blog.blog.entity.Comment;
+import it.tss.blog.blog.entity.User;
 import javax.annotation.security.DenyAll;
 import javax.annotation.security.PermitAll;
 import javax.annotation.security.RolesAllowed;
 import javax.inject.Inject;
 import javax.json.JsonObject;
+import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.NotFoundException;
+import javax.ws.rs.POST;
+import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import org.eclipse.microprofile.jwt.Claim;
+import org.eclipse.microprofile.jwt.Claims;
 
 /**
  *
@@ -37,7 +44,10 @@ public class CommentResource {
     UserStore userStore;
 
     private Long commentId;
-    private Long articleId;
+
+    @Inject
+    @Claim(standard = Claims.sub)
+    String userId;
 
     @GET
     @PermitAll
@@ -55,21 +65,29 @@ public class CommentResource {
         return Response.status(Response.Status.NO_CONTENT).build();
     }
 
-    
+    @POST
+    @Path("/answer")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    @RolesAllowed({"ADMIN", "USER"})
+    public JsonObject answerTo(@PathParam("commentId") Long id, JsonObject json) {
+        Comment commentAnswer = commentStore.find(id).orElseThrow(() -> new NotFoundException());
+        String testo = json.getString("testo");
+        String rating = json.getString("rating");
+        Article article = articleStore.find(commentAnswer.getArticle().getId()).orElseThrow(() -> new NotFoundException());
+        User user = userStore.find(Long.parseLong(userId)).orElseThrow(() -> new NotFoundException());
+        Comment comment = new Comment(testo, article, user, Integer.parseInt(rating));
+        comment.setAnswersTo(commentAnswer);
+        Comment comm = commentStore.create(comment);
+        return comm.toJson();
+    }
+
     public Long getCommentId() {
         return commentId;
     }
 
     public void setCommentId(Long commentId) {
         this.commentId = commentId;
-    }
-
-    public Long getArticleId() {
-        return articleId;
-    }
-
-    public void setArticleId(Long articleId) {
-        this.articleId = articleId;
     }
 
 }
