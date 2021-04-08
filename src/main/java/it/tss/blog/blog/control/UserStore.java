@@ -33,6 +33,7 @@ public class UserStore {
     }
 
     public User create(User u) {
+        u.setPwd(SecurityEncoding.shaHash(u.getPwd()));
         return em.merge(u);
     }
 
@@ -55,23 +56,22 @@ public class UserStore {
     }
 
     public User ban(User user, JsonObject json) {
-        if(json.getString("ban") != null){
+        if (json.getString("ban") != null) {
             user.setBan(true);
-                }
+        }
         return em.merge(user);
     }
-    
-    
-         public Optional<User> findByEmilAndPwd(String email, String pwd) {
+
+    public Optional<User> findByEmilAndPwd(String email, String pwd) {
         try {
             User found = em.createQuery("select e from User e where e.email= :email and e.pwd= :pwd", User.class)
                     .setParameter("email", email)
-                    .setParameter("pwd", pwd)
+                    .setParameter("pwd", SecurityEncoding.shaHash(pwd))
                     .getSingleResult();
             return Optional.of(found);
         } catch (NoResultException ex) {
             return Optional.empty();
         }
     }
-     
- }
+
+}

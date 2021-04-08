@@ -54,23 +54,7 @@ public class CommentResource {
         commentStore.delete(id);
         return Response.status(Response.Status.NO_CONTENT).build();
     }
-//non funziona
 
-    /*  @POST    
-    @Consumes(MediaType.APPLICATION_JSON)
-    @Produces(MediaType.APPLICATION_JSON)
-    public JsonObject createComToCom(JsonObject json) {
-        String testo = json.getString("testo");
-        String userId = json.getString("user");
-        String rating = json.getString("rating");
-        String answersTo=json.getString("answersTo");
-        Article article = articleStore.find(articleId).orElseThrow(() -> new NotFoundException());
-        User user = userStore.find(Long.parseLong(userId)).orElseThrow(() -> new NotFoundException());
-        Comment comment = new Comment(testo, article, user, Integer.parseInt(rating));
-        Comment comm = commentStore.create(comment);
-        comm.setAnswersTo(Long.parseLong(answersTo));
-        return comm.toJson();
-    }*/
     public Long getCommentId() {
         return commentId;
     }
