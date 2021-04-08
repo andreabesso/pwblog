@@ -48,7 +48,7 @@ public class CommentResource {
     }
 
     @DELETE
-    @RolesAllowed("ADMIN")
+    @RolesAllowed({"ADMIN"})
     public Response delete(@PathParam("commentId") Long id) {
         Comment comment = commentStore.find(id).orElseThrow(() -> new NotFoundException());
         commentStore.delete(id);

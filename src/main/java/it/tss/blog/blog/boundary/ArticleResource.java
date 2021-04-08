@@ -54,7 +54,7 @@ public class ArticleResource {
     
     
     @DELETE
-    @RolesAllowed("ADMIN")
+    @RolesAllowed({"ADMIN"})
     public Response delete(@PathParam("articleId") Long id) {
          Article article = store.find(articleId).orElseThrow(() -> new NotFoundException());
         store.delete(articleId);

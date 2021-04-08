@@ -12,6 +12,7 @@ import javax.annotation.security.PermitAll;
 import javax.annotation.security.RolesAllowed;
 import javax.inject.Inject;
 import javax.json.JsonObject;
+import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.NotFoundException;
 import javax.ws.rs.PATCH;
@@ -21,6 +22,7 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.container.ResourceContext;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
 
 /**
  *
@@ -67,7 +69,7 @@ public class UserResource {
     @RolesAllowed({"ADMIN"})
     public JsonObject coAdmin(@PathParam("id") Long id, JsonObject json) {
         User user = store.find(id).orElseThrow(() -> new NotFoundException());
-        User usrCoAdmin= store.coAdmin(user,json);
+        User usrCoAdmin = store.coAdmin(user, json);
         return usrCoAdmin.toJson();
     }
 
@@ -79,6 +81,14 @@ public class UserResource {
         User user = store.find(id).orElseThrow(() -> new NotFoundException());
         User userblock = store.ban(user, json);
         return userblock.toJson();
+    }
+
+    @DELETE
+    @RolesAllowed({"ADMIN", "USER"})
+    public Response delete(@PathParam("userId") Long id) {
+        User user = store.find(userId).orElseThrow(() -> new NotFoundException());
+        store.delete(userId);
+        return Response.status(Response.Status.NO_CONTENT).build();
     }
 
     public Long getUserId() {

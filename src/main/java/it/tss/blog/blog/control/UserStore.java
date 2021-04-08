@@ -81,4 +81,8 @@ public class UserStore {
         return em.merge(user);
     }
 
+    public void delete(Long userId) {
+        em.remove(em.find(User.class, userId));
+    }
+
 }
