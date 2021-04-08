@@ -9,6 +9,7 @@ import it.tss.blog.blog.entity.Article;
 import java.util.List;
 import java.util.Optional;
 import javax.enterprise.context.RequestScoped;
+import javax.inject.Inject;
 import javax.json.JsonObject;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -25,6 +26,9 @@ public class ArticleStore {
     @PersistenceContext
     private EntityManager em;
 
+    @Inject
+    CommentStore commentStore;
+    
     public List<Article> search() {
         return em.createQuery("select e from Article e order by e.id ", Article.class)
                 .getResultList();
@@ -53,8 +57,10 @@ public class ArticleStore {
     return em.merge(article);
     }
 
-    public void delete(Long articleId) {
-        em.remove(em.find(Article.class, articleId));
+    public void delete(Long articleId) {// elimina l'articolo e tutti i suoi commenti
+        Article article = em.find(Article.class, articleId);
+        commentStore.searchByArticle(articleId).forEach(v -> commentStore.delete(v.getId()));
+        em.remove(article);
     }
     
     
