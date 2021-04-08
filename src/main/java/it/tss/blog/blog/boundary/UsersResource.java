@@ -7,7 +7,6 @@ package it.tss.blog.blog.boundary;
 
 import it.tss.blog.blog.control.UserStore;
 import it.tss.blog.blog.entity.User;
-import it.tss.blog.blog.entity.User.Role;
 import java.util.List;
 import javax.inject.Inject;
 import javax.ws.rs.Consumes;
@@ -16,7 +15,6 @@ import javax.ws.rs.POST;
 import java.util.stream.Collectors;
 import javax.annotation.security.DenyAll;
 import javax.annotation.security.PermitAll;
-import javax.annotation.security.RolesAllowed;
 import javax.json.JsonObject;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;

@@ -62,7 +62,7 @@ public class UserResource {
     }
 
     @PATCH
-    @Path("/coadmin")//creo coAdmin che solo un ADMIN può promuovere
+    @Path("/coadmin")//creo un coAdmin che solo un ADMIN può promuovere
     @Produces(MediaType.APPLICATION_JSON)
     @RolesAllowed({"ADMIN"})
     public JsonObject coAdmin(@PathParam("id") Long id, JsonObject json) {
