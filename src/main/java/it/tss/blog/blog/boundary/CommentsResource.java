@@ -84,6 +84,24 @@ public class CommentsResource {
         sub.setCommentId(id);
         return sub;
     }
+    /* non funziona
+    @POST
+    @Path("{commentId}/answer")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    @RolesAllowed({"ADMIN", "USER"})
+    public JsonObject answerTo(@PathParam("commentId") Long id, JsonObject json) {
+        Comment commentAnswer = commentStore.find(id).orElseThrow(() -> new NotFoundException());
+        String text = json.getString("text");
+        String rating = json.getString("rating");
+        Article article = articleStore.find(commentAnswer.getArticle().getId()).orElseThrow(() -> new NotFoundException());
+        User user = userStore.find(Long.parseLong(userId)).orElseThrow(() -> new NotFoundException());
+        Comment comment = new Comment(text, article, user, Integer.parseInt(rating));
+        comment.setAnswersTo(commentAnswer);
+        Comment comm = commentStore.create(comment);
+        return comm.toJson();
+    }
+*/
 
     public Long getArticleId() {
         return articleId;

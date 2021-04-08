@@ -44,8 +44,9 @@ public class Comment extends AbstractEntity implements Serializable {
     @JoinColumn(name = "user_id")
     private User user;
     private int rating;
-    private Long answersTo;
-    
+    @ManyToOne
+    @JoinColumn(name = "answersto_id")
+    private Comment answersTo;
     @Column(name = "dateCom", insertable = false, columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
     private LocalDateTime dateCom;
     
@@ -99,11 +100,11 @@ public class Comment extends AbstractEntity implements Serializable {
         this.rating = rating;
     }
 
-    public Long getAnswersTo() {
+    public Comment getAnswersTo() {
         return answersTo;
     }
 
-    public void setAnswersTo(Long answersTo) {
+    public void setAnswersTo(Comment answersTo) {
         this.answersTo = answersTo;
     }
 

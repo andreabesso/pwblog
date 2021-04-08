@@ -55,6 +55,7 @@ public class CommentResource {
         return Response.status(Response.Status.NO_CONTENT).build();
     }
 
+    
     public Long getCommentId() {
         return commentId;
     }
